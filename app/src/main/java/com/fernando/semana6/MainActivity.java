@@ -14,13 +14,17 @@ public class MainActivity extends AppCompatActivity {
     private double valor2;
     private double resultado;
     private int operador;
-    private boolean primerNum = false;
+    private boolean primerNum;
+    private boolean esPrimerDigito;
+    private boolean decimal;
     private TextView txtResultado;
     private Operaciones operacion;
 
     public MainActivity() {
-        // this.primerNum = false;
         this.operacion = new Operaciones();
+        this.primerNum = true;
+        this.esPrimerDigito = true;
+        this.decimal = false;
     }
 
     @Override
@@ -38,6 +42,15 @@ public class MainActivity extends AppCompatActivity {
         this.operador = 0;
         this.primerNum = true;
         this.txtResultado.setText("0");
+        this.esPrimerDigito = true;
+        resetearDecimal();
+    }
+
+    public void onClickDecimal(View view) {
+        if (this.decimal == false) {
+            this.txtResultado.setText(this.txtResultado.getText().toString() + ".");
+            this.decimal = true;
+        }
     }
 
     public void onClickNumeros(View view) {
@@ -46,14 +59,38 @@ public class MainActivity extends AppCompatActivity {
             this.txtResultado.setText(btn.getText().toString());
             this.primerNum = false;
         } else {
-            this.txtResultado.setText(this.txtResultado.getText().toString() + btn.getText().toString()); ;
+            this.txtResultado.setText(this.txtResultado.getText().toString() + btn.getText().toString());
         }
     }
+
     public void onclicklimpiar(View view) {
         this.limpiar();
     }
-    public void onclickOperadores(View view) {
-        Button btn = (Button) view;
 
+    public void onClickOperadores(View view) {
+        Button btn = (Button) view;
+        if (this.esPrimerDigito) {
+            this.esPrimerDigito = false;
+            this.primerNum = true;
+            this.operador = Integer.parseInt(btn.getTag().toString());
+            this.valor1 = Double.parseDouble(this.txtResultado.getText().toString());
+            this.resetearDecimal();
+        } else {
+
+        }
+    }
+
+    private void operacion() {
+        try {
+            this.resultado = this.operacion.calcular(this.operador, this.valor1, this.valor2);
+        } catch (ArithmeticException e) {
+            this.txtResultado.setText("Syntax error");
+        } catch (Exception e) {
+            this.txtResultado.setText("Se pudrió todo");
+        }
+    }
+
+    private void resetearDecimal() {
+        this.decimal = false;
     }
 }
