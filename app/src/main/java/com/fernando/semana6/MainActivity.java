@@ -1,126 +1,115 @@
 package com.fernando.semana6;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.fernando.modelos.Operaciones;
 
 public class MainActivity extends AppCompatActivity {
-    private double valor1;
-    private double valor2;
-    private double resultado;
-    private int operador;
-    private boolean primerNum;
-    private boolean esPrimerDigito;
-    private boolean decimal;
+    private double valor1 = 0;
+    private double valor2 = 0;
+    private double resultado = 0;
+    private int operador = 0;
+    private boolean primerNum = true;
+    private boolean esPrimerDigito = true;
     private TextView txtResultado;
     private Operaciones operacion;
-
-    public MainActivity() {
-        this.operacion = new Operaciones();
-        this.primerNum = true;
-        this.esPrimerDigito = true;
-        this.decimal = false;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.txtResultado = findViewById(R.id.txt_resultado);
-        this.limpiar();
+        txtResultado = findViewById(R.id.txt_resultado);
+        operacion = new Operaciones();
+        limpiar();
     }
 
     public void limpiar() {
-        this.valor1 = 0;
-        this.valor2 = 0;
-        this.resultado = 0;
-        this.operador = 0;
-        this.primerNum = true;
-        this.txtResultado.setText("0");
-        this.esPrimerDigito = true;
-        resetearDecimal();
+        valor1 = 0;
+        valor2 = 0;
+        resultado = 0;
+        operador = 0;
+        primerNum = true;
+        txtResultado.setText("0");
+        esPrimerDigito = true;
     }
 
     public void onClickDecimal(View view) {
-        if (this.decimal == false) {
-            this.txtResultado.setText(this.txtResultado.getText().toString() + ".");
-            this.decimal = true;
+        String currentText = txtResultado.getText().toString();
+        if (!currentText.contains(".")) {
+            txtResultado.setText(currentText + ".");
         }
     }
 
     public void onClickNumeros(View view) {
         Button btn = (Button) view;
-        System.out.println(this.valor1 + "valor 1");
-        System.out.println(this.valor2 + "valor 2");
-        if (this.primerNum) {
-            this.txtResultado.setText(btn.getText().toString());
-            this.primerNum = false;
+        if (primerNum) {
+            txtResultado.setText(btn.getText().toString());
+            primerNum = false;
         } else {
-            this.txtResultado.setText(this.txtResultado.getText().toString() + btn.getText().toString());
+            txtResultado.append(btn.getText().toString());
         }
     }
 
-    public void onclicklimpiar(View view) {
-        this.limpiar();
+    public void onClickLimpiar(View view) {
+        limpiar();
     }
 
     public void onClickOperadores(View view) {
         Button btn = (Button) view;
-        if (this.esPrimerDigito) {
-            this.operador = Integer.parseInt(btn.getTag().toString());
-            this.valor1 = Double.parseDouble(this.txtResultado.getText().toString());
-            this.esPrimerDigito = false;
-            this.primerNum = true;
-            this.resetearDecimal();
-        } else {
-            if (!this.primerNum) {
-                this.valor2 = Double.parseDouble(this.txtResultado.getText().toString());
-                this.operacion();
-                this.operador = Integer.parseInt(btn.getTag().toString());
-                this.primerNum = true;
-                this.resetearDecimal();
-            }
+        if (esPrimerDigito) {
+            operador = Integer.parseInt(btn.getTag().toString());
+            valor1 = Double.parseDouble(txtResultado.getText().toString());
+            esPrimerDigito = false;
+            primerNum = true;
+        } else if (!primerNum) {
+            valor2 = Double.parseDouble(txtResultado.getText().toString());
+            operacion();
+            operador = Integer.parseInt(btn.getTag().toString());
+            primerNum = true;
         }
-        System.out.println(this.valor1 + "valor 1");
-        System.out.println(this.valor2 + "valor 2");
     }
 
     public void onClickIgual(View view) {
-        if (!this.primerNum) {
-            this.valor2 = Double.parseDouble(this.txtResultado.getText().toString());
-            this.operacion();
+        if (!primerNum) {
+            valor2 = Double.parseDouble(txtResultado.getText().toString());
+            operacion();
+            esPrimerDigito = true;
+            operador = 0;
         }
     }
 
     private void operacion() {
         try {
-            this.resultado = this.operacion.calcular(this.operador, this.valor1, this.valor2);
-            this.txtResultado.setText(String.valueOf(this.resultado));
-            this.valor1 = this.resultado;
+            if (operador != 0) {
+                if (primerNum) {
+                    valor2 = resultado;
+                } else {
+                    valor2 = Double.parseDouble(txtResultado.getText().toString());
+                }
+
+                resultado = operacion.calcular(operador, valor1, valor2);
+                txtResultado.setText(String.valueOf(resultado));
+                valor1 = resultado;
+            }
         } catch (ArithmeticException e) {
-            this.txtResultado.setText("Syntax error");
+            txtResultado.setText("Error de sintaxis");
         } catch (Exception e) {
-            this.txtResultado.setText("Se pudrió todo");
+            txtResultado.setText("Error desconocido");
         }
-        this.esPrimerDigito = false;
-        this.primerNum = true;
-        this.valor2 = 0;
+        esPrimerDigito = false;
+        primerNum = true;
+        operador = 0;
     }
 
     public void onClickMasMenos(View view) {
-        if (txtResultado.getText().toString().contains("-")) {
-            this.txtResultado.setText(this.txtResultado.getText().toString().replace("-", ""));
+        String currentText = txtResultado.getText().toString();
+        if (currentText.startsWith("-")) {
+            txtResultado.setText(currentText.substring(1));
         } else {
-            this.txtResultado.setText("-" + this.txtResultado.getText().toString());
+            txtResultado.setText("-" + currentText);
         }
-    }
-
-    private void resetearDecimal() {
-        this.decimal = false;
     }
 }
