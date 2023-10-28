@@ -70,24 +70,45 @@ public class MainActivity extends AppCompatActivity {
     public void onClickOperadores(View view) {
         Button btn = (Button) view;
         if (this.esPrimerDigito) {
-            this.esPrimerDigito = false;
-            this.primerNum = true;
             this.operador = Integer.parseInt(btn.getTag().toString());
             this.valor1 = Double.parseDouble(this.txtResultado.getText().toString());
+            this.esPrimerDigito = false;
+            this.primerNum = true;
             this.resetearDecimal();
         } else {
+            if (!this.primerNum) {
+                this.valor2 = Double.parseDouble(this.txtResultado.getText().toString());
+                this.operador = Integer.parseInt(btn.getTag().toString());
+                this.primerNum = true;
+                this.resetearDecimal();
+                this.operacion();
+            }
+        }
+    }
 
+    public void onClickIgual(View view) {
+        if (!this.primerNum) {
+            this.valor2 = Double.parseDouble(this.txtResultado.getText().toString());
+            this.operacion();
         }
     }
 
     private void operacion() {
         try {
             this.resultado = this.operacion.calcular(this.operador, this.valor1, this.valor2);
+            this.txtResultado.setText(String.valueOf(this.resultado));
+            this.valor1 = this.resultado;
         } catch (ArithmeticException e) {
             this.txtResultado.setText("Syntax error");
         } catch (Exception e) {
             this.txtResultado.setText("Se pudrió todo");
         }
+        this.esPrimerDigito = false;
+        this.primerNum = true;
+    }
+
+    public void onClickMasMenos(View view) {
+            this.txtResultado.setText("-" + this.txtResultado.getText().toString());
     }
 
     private void resetearDecimal() {
