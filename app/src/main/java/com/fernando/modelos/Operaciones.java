@@ -34,6 +34,7 @@ public class Operaciones {
     private double multiplicar(double multiplicando, double multiplicador) {
         return multiplicando * multiplicador;
     }
+
     private double porcenaje(double porcentaje, double numero) {
         return numero * porcentaje / 100;
     }

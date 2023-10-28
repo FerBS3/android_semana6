@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickNumeros(View view) {
         Button btn = (Button) view;
+        System.out.println(this.valor1 + "valor 1");
+        System.out.println(this.valor2 + "valor 2");
         if (this.primerNum) {
             this.txtResultado.setText(btn.getText().toString());
             this.primerNum = false;
@@ -78,12 +80,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             if (!this.primerNum) {
                 this.valor2 = Double.parseDouble(this.txtResultado.getText().toString());
+                this.operacion();
                 this.operador = Integer.parseInt(btn.getTag().toString());
                 this.primerNum = true;
                 this.resetearDecimal();
-                this.operacion();
             }
         }
+        System.out.println(this.valor1 + "valor 1");
+        System.out.println(this.valor2 + "valor 2");
     }
 
     public void onClickIgual(View view) {
@@ -105,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         }
         this.esPrimerDigito = false;
         this.primerNum = true;
+        this.valor2 = 0;
     }
 
     public void onClickMasMenos(View view) {
