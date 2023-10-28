@@ -108,7 +108,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickMasMenos(View view) {
+        if (txtResultado.getText().toString().contains("-")) {
+            this.txtResultado.setText(this.txtResultado.getText().toString().replace("-", ""));
+        } else {
             this.txtResultado.setText("-" + this.txtResultado.getText().toString());
+        }
     }
 
     private void resetearDecimal() {
