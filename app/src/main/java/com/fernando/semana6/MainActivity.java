@@ -1,10 +1,15 @@
 package com.fernando.semana6;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.fernando.db.Dbhelper;
 import com.fernando.modelos.Operaciones;
 
 public class MainActivity extends AppCompatActivity {
@@ -16,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean esPrimerDigito = true;
     private TextView txtResultado;
     private Operaciones operacion;
+    private Dbhelper dbhelper;
+    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +31,18 @@ public class MainActivity extends AppCompatActivity {
         txtResultado = findViewById(R.id.txt_resultado);
         operacion = new Operaciones();
         limpiar();
+        this.db = dbhelper.getWritableDatabase();
+
+        if (db != null) {
+            Toast.makeText(this, "Base de datos creada", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Error al crear la base de datos", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public MainActivity() {
+        this.operacion = new Operaciones();
+        this.dbhelper = new Dbhelper(MainActivity.this);
     }
 
     public void limpiar() {
