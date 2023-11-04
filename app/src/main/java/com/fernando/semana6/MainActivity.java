@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
             valor2 = Double.parseDouble(txtResultado.getText().toString());
             operacion();
             esPrimerDigito = true;
+            db.execSQL("INSERT INTO tbl_calculos (numero1, numero2, operacion, resultado) VALUES (" + valor1 + ", " + valor2 + ", " + operador + ", " + resultado + ")");
             operador = 0;
         }
     }
